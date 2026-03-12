@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sanctuary Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="header-logo">
+            <img src="Logo.png" alt="Sanctuary Logo">
+        </div>
+
+        <nav class="header-nav">
+            <a href="goal.html">ЦЕЛЬ РАБОТЫ</a>
+            <a href="calculator.html" class="active">КАЛЬКУЛЯТОР</a>
+            <a href="author.html">ОБ АВТОРЕ</a>
+        </nav>
+
+        <button id="header_theme_btn" class="header-theme-btn">СВЕТЛАЯ ТЕМА</button>
+    </header>
+    <img src="Moon.png" alt="Moon" class="moon-bg">
+
+    <div class="app-container">
+        <div class="calculator-panel">
+            <div id="result" class="result">0</div>
+
+            <div class="keyboard">
+                <button id="btn_op_clear" class="my-btn primary">C</button>
+                <button id="btn_op_percent" class="my-btn primary">%</button>
+                <button id="btn_change_color" class="my-btn primary">Color</button>
+                <button id="btn_op_div" class="my-btn primary">/</button>
+                <button id="btn_backspace" class="my-btn primary">⌫</button>
+
+                <button id="btn_digit_7" class="my-btn">7</button>
+                <button id="btn_digit_8" class="my-btn">8</button>
+                <button id="btn_digit_9" class="my-btn">9</button>
+                <button id="btn_op_mult" class="my-btn primary">x</button>
+                <button id="btn_m_plus" class="my-btn primary">M+</button>
+
+                <button id="btn_digit_4" class="my-btn">4</button>
+                <button id="btn_digit_5" class="my-btn">5</button>
+                <button id="btn_digit_6" class="my-btn">6</button>
+                <button id="btn_op_minus" class="my-btn primary">-</button>
+                <button id="btn_m_minus" class="my-btn primary">M-</button>
+
+                <button id="btn_digit_1" class="my-btn">1</button>
+                <button id="btn_digit_2" class="my-btn">2</button>
+                <button id="btn_digit_3" class="my-btn">3</button>
+                <button id="btn_op_plus" class="my-btn primary">+</button>
+                <button id="btn_m_recall" class="my-btn primary">MR</button>
+
+                <button id="btn_op_sign" class="my-btn primary">+/-</button>
+                <button id="btn_digit_0" class="my-btn">0</button>
+                <button id="btn_000" class="my-btn">000</button>
+                <button id="btn_digit_dot" class="my-btn primary">.</button>
+                <button id="btn_fact" class="my-btn primary">x!</button>
+
+                <button id="btn_sqrt" class="my-btn primary">√</button>
+                <button id="btn_sqr" class="my-btn primary">x²</button>
+                <button id="btn_inverse" class="my-btn primary">1/x</button>
+                <button id="btn_op_equal" class="my-btn primary execute equal-btn">=</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <span> 2026 Шпакова Д. Л.</span>
+        <a href="https://github.com/GrayMouse9/js-labs-2026/tree/main" target="_blank">GitHub</a>
+    </footer>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
