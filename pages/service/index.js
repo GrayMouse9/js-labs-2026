@@ -18,11 +18,11 @@ export class ServicePage {
     }
 
     get pageRoot() {
-        return document.getElementById('product-page')
+        return document.getElementById('service-page')
     }
 
     getHTML() {
-        return `<div id="product-page" class="p-4"></div>`
+        return `<div id="service-page" class="p-4"></div>`
     }
 
     clickBack() {

@@ -60,6 +60,6 @@ export class MainPage {
         this.parent.insertAdjacentHTML('beforeend', html)
 
         this.renderCards(this.data);
-        this.addSearchListener();   
+        this.addSearchListener();
     }
 }
