@@ -348,4 +348,5 @@ DerivedData/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+3d-gallery/
 # End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,webstorm+all,visualstudiocode,xcode,node
