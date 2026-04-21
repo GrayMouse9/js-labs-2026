@@ -54,11 +54,23 @@ const remove = (id) => {
     const filteredStocks = stocks.filter(s => s.id !== id);
 
     if (filteredStocks.length === stocks.length) {
-        return false; 
+        return false;
     }
 
     fileService.writeData(dataFilePath, filteredStocks);
     return true;
 };
 
-module.exports = { init, findAll, findOne, create, update, remove };
+const replace = (id, stockData) => {
+    const stocks = fileService.readData(dataFilePath);
+    const index = stocks.findIndex(s => s.id === id);
+
+    if (index === -1) return null;
+
+    stocks[index] = { id, ...stockData };
+    fileService.writeData(dataFilePath, stocks);
+
+    return stocks[index];
+};
+
+module.exports = { init, findAll, findOne, create, update, replace, remove };
