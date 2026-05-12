@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "src": "https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?q=80&w=1000",
+    "title": "Прямой перелет",
+    "text": "Классическая баллистическая схема TLI (Trans-Lunar Injection). Прямой путь к Луне.",
+    "badge": "Быстрый",
+    "badgeClass": "text-bg-danger",
+    "impulse": "3 150 м/с",
+    "time": "3-4 дня"
+  },
+  {
+    "id": 2,
+    "src": "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?q=80&w=1000",
+    "title": "Гравитационный маневр",
+    "text": "Трансфер по слабой границе стабильности (WSB). Использование гравитации Земли и Солнца.",
+    "badge": "Экономичный",
+    "badgeClass": "text-bg-success",
+    "impulse": "2 700 м/с",
+    "time": "3-4 месяца"
+  },
+  {
+    "id": 3,
+    "src": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1000",
+    "title": "Перелет с ожиданием",
+    "text": "Фазирующая орбита вокруг Земли перед рывком к Луне. Для стыковки с Lunar Gateway.",
+    "badge": "Гибкий",
+    "badgeClass": "text-bg-warning",
+    "impulse": "3 050 м/с",
+    "time": "10-14 дней"
+  }
+]

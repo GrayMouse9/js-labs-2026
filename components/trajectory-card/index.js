@@ -1,4 +1,4 @@
-export class ServiceCardComponent {
+export class TrajectoryCardComponent {
     constructor(parent) {
         this.parent = parent;
     }

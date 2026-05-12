@@ -34,9 +34,12 @@ function inverse(arr, num) {
   }
 }
 
-export class ServiceComponent {
+export class TrajectoryComponent {
   constructor(parent) {
     this.parent = parent;
+
+    this.store = {1: null, 2: null};
+    this.lastSave = {1: Promise.resolve(), 2: Promise.resolve()};
   }
 
   getHTML(data) {
@@ -81,6 +84,39 @@ export class ServiceComponent {
                                 <span class="fs-6 d-block">Сумма квадратов (1.3): <span id="res-squares" class="fw-bold text-success"></span></span>
                                 <span class="fs-6 d-block">Сумма и произв. (1.4): <span id="res-sum-mult" class="fw-bold text-success"></span></span>
                                 <span class="fs-6 d-block">Инверсия массива (3.2): <span id="res-inverse" class="fw-bold text-success"></span></span>
+                            </div>
+
+                            <div class="border border-white rounded p-3 mb-3 bg-transparent text-white">
+                                <strong class="fs-5 text-white mb-2 d-block">Async-демо: сложение двух значений</strong>
+                                <p class="small text-secondary mb-3" style="font-family: 'Inter', sans-serif;">
+                                    Сохранение каждого поля — это асинхронная операция с задержкой (мс).
+                                    Пока «висит» долгий запрос в одно поле, можно менять другое.
+                                    Кнопка «Σ await» дождётся именно последнего сохранения и сложит итоговые значения.
+                                </p>
+
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">A:</span>
+                                    <input type="number" id="async-val-1" class="form-control bg-dark text-white border-secondary" value="7" title="Значение">
+                                    <input type="number" id="async-del-1" class="form-control bg-dark text-white border-secondary" value="0" title="Задержка, мс">
+                                    <button class="btn btn-outline-warning" id="async-save-1">Сохранить</button>
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text">B:</span>
+                                    <input type="number" id="async-val-2" class="form-control bg-dark text-white border-secondary" value="3" title="Значение">
+                                    <input type="number" id="async-del-2" class="form-control bg-dark text-white border-secondary" value="0" title="Задержка, мс">
+                                    <button class="btn btn-outline-warning" id="async-save-2">Сохранить</button>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <button class="btn btn-primary btn-sm" id="async-sum">Σ await</button>
+                                    <span class="small">
+                                        A=<span id="async-st-1" class="fw-bold text-success">—</span>
+                                        B=<span id="async-st-2" class="fw-bold text-success">—</span>
+                                    </span>
+                                    <strong class="fs-5">= <span id="async-result" class="text-success">—</span></strong>
+                                </div>
+
+                                <div id="async-log" class="small text-secondary" style="max-height: 110px; overflow-y: auto; font-family: 'Courier New', monospace;"></div>
                             </div>
 
                             <span id="error-msg" class="text-danger fw-bold mb-2 d-none d-block">Пожалуйста, введите массу аппарата!</span>
@@ -154,6 +190,46 @@ export class ServiceComponent {
     });
   }
 
+  asyncLog(text) {
+    const logEl = document.getElementById('async-log');
+    if (!logEl) return;
+    const t = new Date();
+    const ts = t.toLocaleTimeString('ru-RU', {hour12: false}) + '.' +
+        String(t.getMilliseconds()).padStart(3, '0');
+    const line = document.createElement('div');
+    line.textContent = `[${ts}] ${text}`;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  saveField(field, value, delay) {
+    this.asyncLog(`→ запрос: сохранить поле ${field === 1 ? 'A' : 'B'} = ${
+        value} (задержка ${delay} мс)`);
+    const p = new Promise((resolve) => {
+      setTimeout(() => {
+        this.store[field] = value;
+        const el = document.getElementById(`async-st-${field}`);
+        if (el) el.textContent = value;
+        this.asyncLog(`✓ поле ${field === 1 ? 'A' : 'B'} сохранено: ${value}`);
+        resolve(value);
+      }, delay);
+    });
+    this.lastSave[field] = p;
+    return p;
+  }
+
+  async calcSum() {
+    this.asyncLog('— Сумма запрошена, await...');
+    const resEl = document.getElementById('async-result');
+    if (resEl) resEl.textContent = '…';
+    await Promise.all([this.lastSave[1], this.lastSave[2]]);
+    const a = Number(this.store[1]) || 0;
+    const b = Number(this.store[2]) || 0;
+    const sum = a + b;
+    if (resEl) resEl.textContent = sum;
+    this.asyncLog(`= СУММА: ${a} + ${b} = ${sum}`);
+  }
+
   addListeners() {
     const recalcBtn = document.getElementById('recalc-btn');
     const errorMsg = document.getElementById('error-msg');
@@ -193,6 +269,28 @@ export class ServiceComponent {
 
     if (recalcBtn) {
       recalcBtn.addEventListener('click', performCalculations);
+    }
+
+    const saveBtn1 = document.getElementById('async-save-1');
+    const saveBtn2 = document.getElementById('async-save-2');
+    const sumBtn = document.getElementById('async-sum');
+
+    if (saveBtn1) {
+      saveBtn1.addEventListener('click', () => {
+        const v = Number(document.getElementById('async-val-1').value);
+        const d = Number(document.getElementById('async-del-1').value) || 0;
+        this.saveField(1, v, d);
+      });
+    }
+    if (saveBtn2) {
+      saveBtn2.addEventListener('click', () => {
+        const v = Number(document.getElementById('async-val-2').value);
+        const d = Number(document.getElementById('async-del-2').value) || 0;
+        this.saveField(2, v, d);
+      });
+    }
+    if (sumBtn) {
+      sumBtn.addEventListener('click', () => this.calcSum());
     }
   }
 
