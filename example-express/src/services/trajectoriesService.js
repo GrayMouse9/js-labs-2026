@@ -1,9 +1,7 @@
 const fileService = require('./fileService');
 
-// Переменная для хранения пути к файлу данных, будет установлена при инициализации
 let dataFilePath;
 
-// Функция инициализации сервиса с путем к файлу данных
 const init = (filePath) => {
     dataFilePath = filePath;
 };
