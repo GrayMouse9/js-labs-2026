@@ -155,7 +155,7 @@ export class TrajectoryComponent {
         'https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
     loader.setDRACOLoader(dracoLoader);
 
-    const finalModelUrl = modelUrl || './models/moon.glb';
+    const finalModelUrl = modelUrl || './models/Moon.glb';
 
     loader.load(finalModelUrl, (gltf) => {
       const object = gltf.scene;
@@ -198,6 +198,7 @@ export class TrajectoryComponent {
         String(t.getMilliseconds()).padStart(3, '0');
     const line = document.createElement('div');
     line.textContent = `[${ts}] ${text}`;
+    console.log(`[${ts}] ${text}`);
     logEl.appendChild(line);
     logEl.scrollTop = logEl.scrollHeight;
   }
