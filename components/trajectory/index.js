@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DRACOLoader} from 'three/examples/jsm/loaders/DRACOLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {ajax} from '../../modules/ajax.js';
+import {trajectoryUrls} from '../../modules/trajectoryUrls.js';
 
 function sumOfSquares(arr) {
   return arr.reduce((sum, current) => sum + (current ** 2), 0);
@@ -39,7 +41,6 @@ export class TrajectoryComponent {
     this.parent = parent;
 
     this.store = {1: null, 2: null};
-    this.lastSave = {1: Promise.resolve(), 2: Promise.resolve()};
   }
 
   getHTML(data) {
@@ -89,9 +90,9 @@ export class TrajectoryComponent {
                             <div class="border border-white rounded p-3 mb-3 bg-transparent text-white">
                                 <strong class="fs-5 text-white mb-2 d-block">Async-демо: сложение двух значений</strong>
                                 <p class="small text-secondary mb-3" style="font-family: 'Inter', sans-serif;">
-                                    Сохранение каждого поля — это асинхронная операция с задержкой (мс).
-                                    Пока «висит» долгий запрос в одно поле, можно менять другое.
-                                    Кнопка «Σ await» дождётся именно последнего сохранения и сложит итоговые значения.
+                                    Каждое сохранение — настоящий XHR-запрос к серверу с задержкой (мс).
+                                    Кнопка «Σ callback» отправляет оба запроса одновременно и через коллбэк-счётчик
+                                    выводит сумму, как только оба onreadystatechange сработают.
                                 </p>
 
                                 <div class="input-group input-group-sm mb-2">
@@ -108,7 +109,7 @@ export class TrajectoryComponent {
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <button class="btn btn-primary btn-sm" id="async-sum">Σ await</button>
+                                    <button class="btn btn-primary btn-sm" id="async-sum">Σ callback</button>
                                     <span class="small">
                                         A=<span id="async-st-1" class="fw-bold text-success">—</span>
                                         B=<span id="async-st-2" class="fw-bold text-success">—</span>
@@ -203,32 +204,46 @@ export class TrajectoryComponent {
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  saveField(field, value, delay) {
-    this.asyncLog(`→ запрос: сохранить поле ${field === 1 ? 'A' : 'B'} = ${
-        value} (задержка ${delay} мс)`);
-    const p = new Promise((resolve) => {
-      setTimeout(() => {
-        this.store[field] = value;
-        const el = document.getElementById(`async-st-${field}`);
-        if (el) el.textContent = value;
-        this.asyncLog(`✓ поле ${field === 1 ? 'A' : 'B'} сохранено: ${value}`);
-        resolve(value);
-      }, delay);
+  saveField(field, value, delay, callback) {
+    const label = field === 1 ? 'A' : 'B';
+    const url = trajectoryUrls.getTrajectoryById(field) + (delay > 0 ? `?delay=${delay}` : '');
+    this.asyncLog(`→ XHR: сохранить поле ${label} = ${value} (задержка ${delay} мс)`);
+    ajax.get(url, (data, status) => {
+      this.store[field] = value;
+      const el = document.getElementById(`async-st-${field}`);
+      if (el) el.textContent = value;
+      this.asyncLog(`✓ поле ${label} сохранено: ${value} (статус ${status})`);
+      if (callback) callback(value);
     });
-    this.lastSave[field] = p;
-    return p;
   }
 
-  async calcSum() {
-    this.asyncLog('— Сумма запрошена, await...');
+  calcSum() {
+    this.asyncLog('— Σ: запускаем оба сохранения одновременно...');
     const resEl = document.getElementById('async-result');
     if (resEl) resEl.textContent = '…';
-    await Promise.all([this.lastSave[1], this.lastSave[2]]);
-    const a = Number(this.store[1]) || 0;
-    const b = Number(this.store[2]) || 0;
-    const sum = a + b;
-    if (resEl) resEl.textContent = sum;
-    this.asyncLog(`= СУММА: ${a} + ${b} = ${sum}`);
+
+    const v1 = Number(document.getElementById('async-val-1').value);
+    const d1 = Number(document.getElementById('async-del-1').value) || 0;
+    const v2 = Number(document.getElementById('async-val-2').value);
+    const d2 = Number(document.getElementById('async-del-2').value) || 0;
+
+    let completed = 0;
+    const results = {};
+
+    const onSaved = (field, value) => {
+      results[field] = value;
+      completed++;
+      if (completed === 2) {
+        const a = Number(results[1]);
+        const b = Number(results[2]);
+        const sum = a + b;
+        if (resEl) resEl.textContent = sum;
+        this.asyncLog(`= СУММА: ${a} + ${b} = ${sum}`);
+      }
+    };
+
+    this.saveField(1, v1, d1, (val) => onSaved(1, val));
+    this.saveField(2, v2, d2, (val) => onSaved(2, val));
   }
 
   addListeners() {

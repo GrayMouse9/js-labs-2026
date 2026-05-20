@@ -27,6 +27,15 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    const delay = parseInt(req.query.delay);
+    if (delay > 0) {
+        setTimeout(next, delay);
+    } else {
+        next();
+    }
+});
+
 app.use('/trajectories', trajectoriesRouter);
 
 app.use((req, res) => {
