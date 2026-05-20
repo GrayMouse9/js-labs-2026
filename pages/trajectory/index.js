@@ -9,11 +9,14 @@ export class TrajectoryPage {
         this.parent = parent;
         this.id = parseInt(id);
     }
-
-    getData() {
-        ajax.get(trajectoryUrls.getTrajectoryById(this.id), (data) => {
+ 
+    async getData() {
+        try {
+            const data = await ajax.get(trajectoryUrls.getTrajectoryById(this.id));
             this.renderData(data);
-        });
+        } catch (err) {
+            console.error('Ошибка загрузки траектории:', err);
+        }
     }
 
     get pageRoot() {

@@ -9,7 +9,7 @@ export class MainPage {
         this.parent = parent;
         this.data = [];
     }
-
+ 
     get pageRoot() {
         return document.getElementById('main-page')
     }
@@ -42,10 +42,13 @@ export class MainPage {
         )
     }
 
-    getData() {
-        ajax.get(trajectoryUrls.getTrajectories(), (data) => {
+    async getData() {
+        try {
+            const data = await ajax.get(trajectoryUrls.getTrajectories());
             this.renderData(data);
-        })
+        } catch (err) {
+            console.error('Ошибка загрузки списка траекторий:', err);
+        }
     }
 
     renderData(items) {
@@ -94,7 +97,7 @@ export class MainPage {
 
         this.data.forEach((item, index) => {
             const isActive = index === 0 ? 'active' : '';
-            const imgClass = item.id === 3 ? 'small-img' : 'square-img';
+            const imgClass = 'square-img';
 
             indicatorsContainer.insertAdjacentHTML('beforeend', `
                 <button type="button" data-bs-target="#spaceCarousel" data-bs-slide-to="${index}"

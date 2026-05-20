@@ -11,6 +11,7 @@ const DATA_FILE_PATH = path.join(__dirname, 'data/trajectories.json');
 trajectoriesService.init(DATA_FILE_PATH);
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
  
 app.use(express.static(path.join(__dirname, '..', '..', 'public')));

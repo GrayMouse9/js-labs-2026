@@ -89,9 +89,9 @@ export class TrajectoryComponent {
                             <div class="border border-white rounded p-3 mb-3 bg-transparent text-white">
                                 <strong class="fs-5 text-white mb-2 d-block">Async-демо: сложение двух значений</strong>
                                 <p class="small text-secondary mb-3" style="font-family: 'Inter', sans-serif;">
-                                    Сохранение каждого поля — это асинхронная операция с задержкой (мс).
-                                    Пока «висит» долгий запрос в одно поле, можно менять другое.
-                                    Кнопка «Σ await» дождётся именно последнего сохранения и сложит итоговые значения.
+                                    Каждое сохранение — fetch-запрос к серверу с задержкой (мс).
+                                    Кнопка «Σ await» запускает оба запроса одновременно через Promise.all
+                                    и выводит сумму, как только оба завершатся.
                                 </p>
 
                                 <div class="input-group input-group-sm mb-2">
@@ -155,7 +155,7 @@ export class TrajectoryComponent {
         'https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
     loader.setDRACOLoader(dracoLoader);
 
-    const finalModelUrl = modelUrl || './models/moon.glb';
+    const finalModelUrl = modelUrl || '/Moon.glb';
 
     loader.load(finalModelUrl, (gltf) => {
       const object = gltf.scene;
@@ -189,7 +189,7 @@ export class TrajectoryComponent {
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
   }
-
+  
   asyncLog(text) {
     const logEl = document.getElementById('async-log');
     if (!logEl) return;
@@ -202,30 +202,38 @@ export class TrajectoryComponent {
     logEl.scrollTop = logEl.scrollHeight;
   }
 
-  saveField(field, value, delay) {
-    this.asyncLog(`→ запрос: сохранить поле ${field === 1 ? 'A' : 'B'} = ${
-        value} (задержка ${delay} мс)`);
-    const p = new Promise((resolve) => {
-      setTimeout(() => {
-        this.store[field] = value;
-        const el = document.getElementById(`async-st-${field}`);
-        if (el) el.textContent = value;
-        this.asyncLog(`✓ поле ${field === 1 ? 'A' : 'B'} сохранено: ${value}`);
-        resolve(value);
-      }, delay);
-    });
-    this.lastSave[field] = p;
-    return p;
+  async saveField(field, value, delay) {
+    const label = field === 1 ? 'A' : 'B';
+    const url = trajectoryUrls.getTrajectoryById(field) + (delay > 0 ? `?delay=${delay}` : '');
+    this.asyncLog(`→ fetch: сохранить поле ${label} = ${value} (задержка ${delay} мс)`);
+    try {
+      await ajax.get(url);
+      this.store[field] = value;
+      const el = document.getElementById(`async-st-${field}`);
+      if (el) el.textContent = value;
+      this.asyncLog(`✓ поле ${label} сохранено: ${value}`);
+      return value;
+    } catch (err) {
+      this.asyncLog(`✗ ошибка: ${err.message}`);
+    }
   }
 
   async calcSum() {
-    this.asyncLog('— Сумма запрошена, await...');
+    this.asyncLog('— Σ await: запускаем оба запроса одновременно...');
     const resEl = document.getElementById('async-result');
     if (resEl) resEl.textContent = '…';
-    await Promise.all([this.lastSave[1], this.lastSave[2]]);
-    const a = Number(this.store[1]) || 0;
-    const b = Number(this.store[2]) || 0;
-    const sum = a + b;
+
+    const v1 = Number(document.getElementById('async-val-1').value);
+    const d1 = Number(document.getElementById('async-del-1').value) || 0;
+    const v2 = Number(document.getElementById('async-val-2').value);
+    const d2 = Number(document.getElementById('async-del-2').value) || 0;
+
+    const [a, b] = await Promise.all([
+      this.saveField(1, v1, d1),
+      this.saveField(2, v2, d2),
+    ]);
+
+    const sum = Number(a) + Number(b);
     if (resEl) resEl.textContent = sum;
     this.asyncLog(`= СУММА: ${a} + ${b} = ${sum}`);
   }

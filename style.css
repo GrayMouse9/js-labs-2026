@@ -72,17 +72,13 @@ body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-.square-img, .small-img {
+.square-img {
     width: 600px !important;
     height: 600px !important;
     object-fit: contain;
     object-position: center;
     border-radius: 12px;
     margin-top: 20px;
-}
-
-.small-img {
-    transform: scale(0.6);
 }
 
 h2 {
@@ -106,4 +102,22 @@ h2 {
 .glass-caption small, h4 {
     font-family: 'Cheque', sans-serif;
     font-size: 1.1em; /* Чуть увеличим размер, так как тег <small> делает текст мельче */ /* Добавим небольшой межбуквенный интервал для красоты */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: brightness(0) invert(1);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    color: #ffffff;
+    opacity: 1;
+}
+
+.carousel-caption,
+.carousel-caption h4,
+.carousel-caption small,
+.carousel-caption strong {
+    color: #ffffff !important;
 }
