@@ -104,15 +104,10 @@ h2 {
     font-size: 1.1em; /* Чуть увеличим размер, так как тег <small> делает текст мельче */ /* Добавим небольшой межбуквенный интервал для красоты */
 }
 
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    filter: brightness(0) invert(1);
-}
-
-.carousel-control-prev,
-.carousel-control-next {
-    color: #ffffff;
-    opacity: 1;
+#spaceCarousel {
+    --bs-carousel-indicator-active-bg: #ffffff;
+    --bs-carousel-caption-color: #ffffff;
+    --bs-carousel-control-icon-filter: ;
 }
 
 .carousel-caption,

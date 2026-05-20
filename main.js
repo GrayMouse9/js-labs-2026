@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import './style.css';
 import { MainPage } from './pages/main/index.js';
 
 const root = document.getElementById('root');
