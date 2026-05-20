@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "src": "https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?q=80&w=1000",
+    "src": "http://localhost:3000/img/rocket.png",
     "title": "Прямой перелет",
     "text": "Классическая баллистическая схема TLI (Trans-Lunar Injection). Прямой путь к Луне.",
     "badge": "Быстрый",
@@ -11,7 +11,7 @@
   },
   {
     "id": 2,
-    "src": "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?q=80&w=1000",
+    "src": "http://localhost:3000/img/satellite.webp",
     "title": "Гравитационный маневр",
     "text": "Трансфер по слабой границе стабильности (WSB). Использование гравитации Земли и Солнца.",
     "badge": "Экономичный",
@@ -21,7 +21,7 @@
   },
   {
     "id": 3,
-    "src": "https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=1000",
+    "src": "http://localhost:3000/img/asrtronaut.png",
     "title": "Перелет с ожиданием",
     "text": "Фазирующая орбита вокруг Земли перед рывком к Луне. Для стыковки с Lunar Gateway.",
     "badge": "Гибкий",

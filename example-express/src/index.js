@@ -11,6 +11,7 @@ const DATA_FILE_PATH = path.join(__dirname, 'data/trajectories.json');
 trajectoriesService.init(DATA_FILE_PATH);
 
 app.use(express.json());
+app.use('/img', express.static(path.join(__dirname, '..', '..', 'img')));
 
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
